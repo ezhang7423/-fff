@@ -2,12 +2,13 @@
 #include "future/index.h"
 #include "mantra/index.h"
 #include <unistd.h>
+#include <sys/wait.h>
 #include <thread>
 
 using namespace std;
 int main()
 {
-    int *ready = new int(0);
+
     thread fut(fut::main);
     fut.detach();
     thread man(man::main);
@@ -18,16 +19,13 @@ int main()
     if (ref == 0)
     {
         // do some stuff as child
+        sleep(2);
         return 0;
     }
     else
     {
-        while (true)
-        {
-            if (*ready == 1)
-            {
-                break;
-            }
-        }
+        waitpid(ref);
+        cout << "the other guy finished so i can go now" << endl;
+        return 0;
     }
 }
